@@ -10,22 +10,7 @@ The data used for the analysis was provided by the mentors of the OUI BootCamp d
 
 ----
 # Data Transformation: 
-The data transformation process included changing the data type present, replacing some data value,filtering rows, removing duplicates all present in the code below:
-let
-    Source = Csv.Document(File.Contents("C:\Users\user\Desktop\DA\emp-data.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
-    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Name", type text}, {"Gender", type text}, {"Department", type text}, {"Salary", Currency.Type}, {"Location", type text}, {"Rating", type text}}),
-    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","","N/A",Replacer.ReplaceValue,{"Gender"}),
-    #"Filtered Rows" = Table.SelectRows(#"Replaced Value", each ([Department] <> "NULL") and ([Salary] <> null) and ([Rating] <> "Not Rated")),
-    #"Removed Duplicates" = Table.Distinct(#"Filtered Rows", {"Name", "Department", "Location", "Rating"}),
-    #"Merged Queries" = Table.NestedJoin(#"Removed Duplicates", {"Department", "Rating"}, #"bonus mapping", {"Department", "Attribute"}, "bonus mapping", JoinKind.LeftOuter),
-    #"Expanded bonus mapping" = Table.ExpandTableColumn(#"Merged Queries", "bonus mapping", {"Value"}, {"Value"}),
-    #"Grouped Rows" = Table.Group(#"Expanded bonus mapping", {"Department"}, {{"Count", each _, type table [Name=nullable text, Gender=nullable text, Department=nullable text, Salary=nullable number, Location=nullable text, Rating=nullable text, Value=nullable number]}}),
-    #"Expanded Count" = Table.ExpandTableColumn(#"Grouped Rows", "Count", {"Name", "Gender", "Salary", "Location", "Rating", "Value"}, {"Name", "Gender", "Salary", "Location", "Rating", "Value"}),
-    #"Renamed Columns" = Table.RenameColumns(#"Expanded Count",{{"Location", "Region"}})
-in
-    #"Renamed Columns"
-    I also applied various DAX functions to obtain needed figures.
+The data transformation process included changing the data type present, replacing some data value,filtering rows, removing duplicates, merging queries and other transformation. I also applied various DAX functions to obtain needed figures.
     
     ----
     
